@@ -1,8 +1,11 @@
 class Day2
   attr_accessor :instructions
 
-  def initialize(file)
+  def initialize(file, noun, verb)
     @instructions = File.read(file).split(",").map(&:to_i)
+
+    @instructions[1] = noun unless noun.nil?
+    @instructions[2] = verb unless verb.nil?
   end
 
   def execute
