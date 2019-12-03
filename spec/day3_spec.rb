@@ -6,13 +6,17 @@ RSpec.describe Day3 do
 
     context "move" do
       let(:file) { "lib/day3-test1.txt" }
-      let(:current_point) { [ 1, 2 ] }
+      let(:current_point) { Day3::WirePoint.new(1, 2) }
       context "right" do
         let(:instruction) { "R5" }
 
         it "moves right" do
-          expect(subject.move(current_point, instruction)).to eq([
-            [2, 2], [3, 2], [4, 2], [5, 2], [6, 2]
+          expect(subject.move(current_point, instruction).to_set).to eq(Set[
+            Day3::WirePoint.new(2, 2),
+            Day3::WirePoint.new(3, 2),
+            Day3::WirePoint.new(4, 2),
+            Day3::WirePoint.new(5, 2),
+            Day3::WirePoint.new(6, 2)
           ])
         end
       end
@@ -20,8 +24,10 @@ RSpec.describe Day3 do
         let(:instruction) { "L3" }
 
         it "moves right" do
-          expect(subject.move(current_point, instruction)).to eq([
-            [0, 2], [-1, 2], [-2, 2]
+          expect(subject.move(current_point, instruction).to_set).to eq(Set[
+            Day3::WirePoint.new(0, 2),
+            Day3::WirePoint.new(-1, 2),
+            Day3::WirePoint.new(-2, 2)
           ])
         end
       end
@@ -34,10 +40,10 @@ RSpec.describe Day3 do
       it "lays wire" do
         coords = subject.lay_wire(wire)
         expect(coords).to eq(Set[
-          [1, 0], [2, 0],
-          [2, -1], [2, -2], [2, -3],
-          [1, -3],
-          [1, -2], [1, -1], [1, 1]
+          Day3::WirePoint.new(1, 0), Day3::WirePoint.new(2, 0),
+          Day3::WirePoint.new(2, -1), Day3::WirePoint.new(2, -2), Day3::WirePoint.new(2, -3),
+          Day3::WirePoint.new(1, -3),
+          Day3::WirePoint.new(1, -2), Day3::WirePoint.new(1, -1), Day3::WirePoint.new(1, 1)
         ])
       end
     end
