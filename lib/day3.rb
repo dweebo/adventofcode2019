@@ -15,6 +15,10 @@ class Day3
     def hash
       [x, y].hash
     end
+
+    def to_s
+      "#{x},#{y} steps=#{steps}"
+    end
   end
 
   def initialize(file)
@@ -26,6 +30,23 @@ class Day3
     (lay_wire(@wire1) & lay_wire(@wire2))
       .map { |intersection| intersection.x.abs + intersection.y.abs }
       .min
+  end
+
+  def part2
+    wire1_coords = lay_wire(@wire1)
+    wire2_coords = lay_wire(@wire2)
+    min_steps = 1000000
+    wire1_coords.each do |w1|
+      wire2_coords.each do |w2|
+        if w1.eql?(w2)
+          steps = w1.steps + w2.steps
+          if steps < min_steps
+            min_steps = steps
+          end
+        end
+      end
+    end
+    return min_steps
   end
 
   def lay_wire(wire)
@@ -47,25 +68,25 @@ class Day3
       (1..distance).map do |i|
         WirePoint.new(current_point.x + i,
                       current_point.y,
-                      0)
+                      current_point.steps + i)
       end
     when "L"
       (1..distance).map do |i|
         WirePoint.new(current_point.x - i,
                       current_point.y,
-                      0)
+                      current_point.steps + i)
       end
     when "U"
       (1..distance).map do |i|
         WirePoint.new(current_point.x,
                       current_point.y - i,
-                      0)
+                      current_point.steps + i)
       end
     when "D"
       (1..distance).map do |i|
         WirePoint.new(current_point.x,
                       current_point.y + i,
-                      0)
+                      current_point.steps + i)
       end
     end
   end

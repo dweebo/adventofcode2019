@@ -59,16 +59,24 @@ RSpec.describe Day3 do
     context "sample one" do
       let(:file) { "lib/day3-test1.txt" }
 
-      it "finds point" do
+      it "part1" do
         expect(subject.part1).to eq(159)
+      end
+
+      it "part2" do
+        expect(subject.part2).to eq(610)
       end
     end
 
     context "sample two" do
       let(:file) { "lib/day3-test2.txt" }
 
-      it "finds point" do
+      it "part1" do
         expect(subject.part1).to eq(135)
+      end
+
+      it "part2" do
+        expect(subject.part2).to eq(410)
       end
     end
 
@@ -80,5 +88,12 @@ RSpec.describe Day3 do
       end
     end
 
+    context "part2" do
+      let(:file) { "lib/day3.txt" }
+
+      it "finds point" do
+        expect(subject.part2).to eq(20286)
+      end
+    end
   end
 end
