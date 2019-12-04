@@ -36,13 +36,13 @@ RSpec.describe Day4 do
     end
   end
 
-  describe "valid_passwords" do
+  describe "find password counts" do
     context "range1" do
       let(:start_range) { 10 }
       let(:end_range) { 20 }
 
       it "counts correctly" do
-        expect(subject.valid_passwords).to eq(1)
+        expect(subject.part1).to eq(1)
       end
     end
 
@@ -51,7 +51,7 @@ RSpec.describe Day4 do
       let(:end_range) { 100 }
 
       it "counts correctly" do
-        expect(subject.valid_passwords).to eq(9)
+        expect(subject.part1).to eq(9)
       end
     end
 
@@ -60,18 +60,46 @@ RSpec.describe Day4 do
       let(:end_range) { 120 }
 
       it "counts correctly" do
-        expect(subject.valid_passwords).to eq(9)
+        expect(subject.part1).to eq(9)
       end
     end
 
-    context "part1" do
+    context "real input part1" do
+      it "counts correctly" do
+        expect(subject.part1).to eq(495)
+      end
+    end
+
+    context "part2 diff" do
+      let(:start_range) { 1111 }
+      let(:end_range) { 1120 }
 
       it "counts correctly" do
-        expect(subject.valid_passwords).to eq(495)
+        expect(subject.part2).to eq(0)
       end
     end
 
+    context "part2 diff" do
+      let(:start_range) { 1123 }
+      let(:end_range) { 1130 }
 
+      it "counts correctly" do
+        expect(subject.part2).to eq(7)
+      end
+    end
+
+    context "part2 diff2" do
+      let(:start_range) { 1244 }
+      let(:end_range) { 1250 }
+
+      it "counts correctly" do
+        expect(subject.part2).to eq(1)
+      end
+
+    context "real input part2" do
+      it "counts correctly" do
+        expect(subject.part2).to eq(305)
+      end
+    end
   end
-
 end
