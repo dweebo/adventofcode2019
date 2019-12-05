@@ -70,11 +70,27 @@ RSpec.describe Day5 do
 
     context "part1" do
 
-      it "executes add by position and value" do
-        allow($stdin).to receive(:gets).and_return("1\\n")
+      it "executes part 1" do
+        allow($stdin).to receive(:gets).and_return("1\n")
         subject.execute
       end
     end
 
+    context "part2 test 1" do
+      let(:file) { "lib/day5-part2-test1.txt" }
+
+      it "executes part 2" do
+        allow($stdin).to receive(:gets).and_return("8\n")
+        subject.execute
+      end
+    end
+
+    context "part2" do
+
+      it "executes part 2" do
+        allow($stdin).to receive(:gets).and_return("5\n")
+        subject.execute
+      end
+    end
   end
 end

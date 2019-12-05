@@ -5,6 +5,10 @@ class Day5
   OPCODE_MULT = 2
   OPCODE_INPUT = 3
   OPCODE_OUTPUT = 4
+  OPCODE_JUMP_IF_TRUE = 5
+  OPCODE_JUMP_IF_FALSE = 6
+  OPCODE_LESS_THAN = 7
+  OPCODE_EQUALS = 8
   OPCODE_END = 99
   FULL_OPCODE_INSTRUCTION_LEN = 5
   MAX_PARAMS = 3
@@ -23,30 +27,25 @@ class Day5
       op_code = parse_opcode(@instructions[current_instruction])
       modes = parse_modes(@instructions[current_instruction])
 
-      if op_code == OPCODE_END
-        break
-      elsif op_code == OPCODE_ADD
-        params = @instructions[current_instruction + 1, 3]
-        values = params.zip(modes).map{ |param, mode| value(mode, param) }
-        @instructions[params[2]] = values[0] + values[1]
-        current_instruction += 4
-      elsif op_code == OPCODE_MULT
-        params = @instructions[current_instruction + 1, 3]
-        values = params.zip(modes).map{ |param, mode| value(mode, param) }
-        @instructions[params[2]] = values[0] * values[1]
-        current_instruction += 4
-      elsif op_code == OPCODE_INPUT
-        puts "input: "
-        addr = @instructions[current_instruction + 1]
-        value = $stdin.gets
-        value = value.chomp.to_i
-        @instructions[addr] = value
-        current_instruction += 2
-      elsif op_code == OPCODE_OUTPUT
-        param = @instructions[current_instruction + 1]
-        value = value(modes[0], param)
-        puts value(modes[0], param)
-        current_instruction += 2
+      case op_code
+      when OPCODE_END
+        return
+      when OPCODE_ADD
+        current_instruction = add(current_instruction, modes)
+      when OPCODE_MULT
+        current_instruction = mult(current_instruction, modes)
+      when OPCODE_INPUT
+        current_instruction = input(current_instruction)
+      when OPCODE_OUTPUT
+        current_instruction = output(current_instruction, modes)
+      when OPCODE_JUMP_IF_TRUE
+        current_instruction = jump_if_true(current_instruction, modes)
+      when OPCODE_JUMP_IF_FALSE
+        current_instruction = jump_if_false(current_instruction, modes)
+      when OPCODE_LESS_THAN
+        current_instruction = less_than(current_instruction, modes)
+      when OPCODE_EQUALS
+        current_instruction = equals(current_instruction, modes)
       end
     end
   end
@@ -76,4 +75,79 @@ class Day5
     end
   end
 
+  def add(current_instruction, modes)
+    params = @instructions[current_instruction + 1, 3]
+    values = params.zip(modes).map{ |param, mode| value(mode, param) }
+    @instructions[params[2]] = values[0] + values[1]
+    current_instruction + 4
+  end
+
+  def mult(current_instruction, modes)
+    params = @instructions[current_instruction + 1, 3]
+    values = params.zip(modes).map{ |param, mode| value(mode, param) }
+    @instructions[params[2]] = values[0] * values[1]
+    current_instruction + 4
+  end
+
+  def input(current_instruction)
+    puts "input: "
+    addr = @instructions[current_instruction + 1]
+    value = $stdin.gets
+    value = value.chomp.to_i
+    @instructions[addr] = value
+    current_instruction + 2
+  end
+
+  def output(current_instruction, modes)
+    param = @instructions[current_instruction + 1]
+    value = value(modes[0], param)
+    puts value(modes[0], param)
+    current_instruction + 2
+  end
+
+  def jump_if_true(current_instruction, modes)
+    test_value, jump_value = @instructions[current_instruction + 1, 2]
+      .zip(modes)
+      .map { |param, mode| value(mode, param) }
+
+    if test_value != 0
+      jump_value
+    else
+      current_instruction + 3
+    end
+  end
+
+  def jump_if_false(current_instruction, modes)
+    test_value, jump_value = @instructions[current_instruction + 1, 2]
+      .zip(modes)
+      .map { |param, mode| value(mode, param) }
+
+    if test_value == 0
+      jump_value
+    else
+      current_instruction + 3
+    end
+  end
+
+  def less_than(current_instruction, modes)
+    p1, p2 = @instructions[current_instruction + 1, 2]
+      .zip(modes)
+      .map { |param, mode| value(mode, param) }
+
+   output_addr = @instructions[current_instruction + 3]
+   @instructions[output_addr] = (p1 < p2) ? 1 : 0
+
+   current_instruction + 4
+  end
+
+  def equals(current_instruction, modes)
+    p1, p2 = @instructions[current_instruction + 1, 2]
+      .zip(modes)
+      .map { |param, mode| value(mode, param) }
+
+   output_addr = @instructions[current_instruction + 3]
+   @instructions[output_addr] = (p1 == p2) ? 1 : 0
+
+   current_instruction + 4
+  end
 end
