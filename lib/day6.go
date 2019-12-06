@@ -6,28 +6,31 @@ import (
 	"strings"
 )
 
-type Planet struct {
-	name     string
-	orbits   int
-	parent   *Planet
-	children []*Planet
+type SpaceObject struct {
+	name        string
+	orbit_count int
+	orbits      *SpaceObject
+	satellites  []*SpaceObject
+	transfers   []*SpaceObject
 }
 
-func (p *Planet) AddLink(planet *Planet) {
-	p.children = append(p.children, planet)
-	planet.parent = p
+func (p *SpaceObject) AddSatellite(space_object *SpaceObject) {
+	p.satellites = append(p.satellites, space_object)
+	p.transfers = append(p.transfers, space_object)
+	space_object.orbits = p
+	space_object.transfers = append(space_object.transfers, p)
 }
 
-var planets = make(map[string]*Planet)
+var space_objects = make(map[string]*SpaceObject)
 
-func add_planet(planet_name string) *Planet {
-	planet, found := planets[planet_name]
+func add_space_object(space_object_name string) *SpaceObject {
+	space_object, found := space_objects[space_object_name]
 	if !found {
-		planet = &Planet{name: planet_name}
-		planets[planet.name] = planet
-		return planet
+		space_object = &SpaceObject{name: space_object_name}
+		space_objects[space_object.name] = space_object
+		return space_object
 	} else {
-		return planet
+		return space_object
 	}
 }
 
@@ -39,40 +42,43 @@ func main() {
 
 	for _, line := range strings.Split(string(data), "\n") {
 		if len(line) > 0 {
-			base_planet := add_planet(line[0:3])
-			orbiting_planet := add_planet(line[4:])
-			base_planet.AddLink(orbiting_planet)
+			base_space_object := add_space_object(line[0:3])
+			orbiting_space_object := add_space_object(line[4:])
+			base_space_object.AddSatellite(orbiting_space_object)
 		}
 	}
 
-	queue := make([]*Planet, 0, 10)
-	for _, p := range planets["COM"].children {
-		p.orbits = 1
+	queue := make([]*SpaceObject, 0, 10)
+	for _, p := range space_objects["COM"].satellites {
+		p.orbit_count = 1
 		queue = append(queue, p)
 	}
 
 	total_orbits := 0
 	for len(queue) > 0 {
-		base_planet := queue[0]
+		base_space_object := queue[0]
 		queue = queue[1:]
-		total_orbits += base_planet.orbits
-		x := planets[base_planet.name]
-		for _, orbiting_planet := range x.children {
-			orbiting_planet.orbits = base_planet.orbits + 1
-			queue = append(queue, orbiting_planet)
+		total_orbits += base_space_object.orbit_count
+		x := space_objects[base_space_object.name]
+		for _, orbiting_space_object := range x.satellites {
+			orbiting_space_object.orbit_count = base_space_object.orbit_count + 1
+			queue = append(queue, orbiting_space_object)
 		}
 	}
 
 	fmt.Println(total_orbits)
 }
 
-// parse file into map of base planet => list of orbiting planets
+func part1() {
+}
+
+// parse file into map of base space_object => list of orbiting space_objects
 // create queue of plants to process
-// add all planets from Center to queue w/ orbits size=1
+// add all space_objects from Center to queue w/ orbits size=1
 // while queue not empty
-//   remove planet p from queue
+//   remove space_object p from queue
 //   total_orbits += p.orbits
-//   for each planet q orbiting p (from map)
+//   for each space_object q orbiting p (from map)
 //      set q.orbits=p.orbits+1
 //      add q to queue
 //171213
