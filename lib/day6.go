@@ -48,6 +48,10 @@ func main() {
 		}
 	}
 
+	part1()
+}
+
+func part1() {
 	queue := make([]*SpaceObject, 0, 10)
 	for _, p := range space_objects["COM"].satellites {
 		p.orbit_count = 1
@@ -67,9 +71,6 @@ func main() {
 	}
 
 	fmt.Println(total_orbits)
-}
-
-func part1() {
 }
 
 // parse file into map of base space_object => list of orbiting space_objects
