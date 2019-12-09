@@ -122,6 +122,7 @@ class IntCode
   def output(current_instruction, modes)
     param = @instructions[current_instruction + 1]
     value = value(modes[0], param)
+    puts "output #{value}"
     @output_writer.write(value)
     current_instruction + 2
   end
