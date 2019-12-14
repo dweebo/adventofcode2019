@@ -40,30 +40,18 @@ class Day13
       @paddle_y = 0
     end
 
-    # how to control?
-    # track ball
     def read
-      puts "read ball: #{@ball_x}, paddle #{@paddle_x}"
       if @paddle_x < @ball_x
-        puts "read right #{@paddle_x}"
-        #@board[@paddle_y * BOARD_WIDTH + @paddle_x] = EMPTY
         @paddle_x = @paddle_x + 1
-        #@board[@paddle_y * BOARD_WIDTH + @paddle_x] = PADDLE
         return JOYSTICK_RIGHT
       elsif @paddle_x > @ball_x
-        puts "read left #{@paddle_x}"
-        #@board[@paddle_y * BOARD_WIDTH + @paddle_x] = EMPTY
         @paddle_x = @paddle_x - 1
-        #@board[@paddle_y * BOARD_WIDTH + @paddle_x] = PADDLE
         return JOYSTICK_LEFT
       else
-        puts "read neutral"
         return JOYSTICK_NEUTRAL
       end
     end
 
-    #x 0-43
-    #y 0-19
     def write(value)
       case @value_type
       when VALUE_TYPE_X
@@ -85,7 +73,6 @@ class Day13
           elsif value == PADDLE
             @paddle_x = @last_x
             @paddle_y = @last_y
-            puts "paddle set #{@paddle_x} #{@paddle_y}"
           end
           @blocks = @blocks + 1
           update_board(value)
@@ -146,7 +133,5 @@ class Day13
     engine.set_input_reader(breakout)
     engine.set_output_writer(breakout)
     engine.execute
-
-    breakout.to_s
   end
 end
