@@ -50,11 +50,16 @@ class IntCode
     @output_writer = writer
   end
 
+  def kill
+    @alive = false
+  end
+
   def execute
+    @alive = true
     relative_base = 0
     current_instruction = 0
 
-    while true do
+    while @alive do
 
       op_code = parse_opcode(@instructions[current_instruction])
       modes = parse_modes(@instructions[current_instruction])
