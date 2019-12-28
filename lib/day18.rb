@@ -22,6 +22,8 @@ class Day18
     @grid = File.read(file)
       .split("\n")
       .map { |line| line.split('') }
+    @counter = 0
+    @start = Time.now
   end
 
   class Path
@@ -50,10 +52,9 @@ class Day18
     #keys_to_find = (0...26).map {|i| (97+i).chr }
     start_path = Path.new([], keys, x, y, 0)
 
-    @counter = 0
 
-    paths = dfs_path(start_path, "")
-    binding.pry
+    paths = bfs_path(start_path)
+    puts "count #{@counter}"
     paths.min_by {|p| p.steps }.steps
   end
 
@@ -81,6 +82,80 @@ class Day18
     keys
   end
 
+
+  def bfs_path(path)
+    #puts "check path #{path.keys_found.join('')}"
+
+    if path.keys_not_found.size == 0
+      puts "#{@counter} #{path.steps} #{path.keys_found.join('')} #{Time.now - @start}"
+      return path
+    end
+
+    @counter = @counter + 1
+    #return nil if @counter > 20
+
+    bfs_keys(path).map do |new_path|
+      bfs_path(new_path)
+    end.flatten.compact
+
+  end
+
+  # rework to find all keys from a given spot
+  # so bfs of bfs
+  # return from here a list of paths to any findable key
+  # create a new path for the queue for every step?
+  # but mult keys can be found on same path (and that might even be best strategy)
+  #   or could just stop at first key found
+  #   so once find key, add path to new_paths[]
+  def bfs_keys(path)
+    visited = Array.new(@grid.size)
+    (0..@grid.size).each { |i| visited[i] = Array.new(@grid[0].size) }
+
+    new_paths = []
+    queue = []
+    queue << [ path.x, path.y, 0]
+
+    while !queue.empty?
+      x, y, steps = queue[0]
+      queue = queue[1,queue.length]
+
+      type = @grid[y][x]
+      if visited[y][x] == true
+        #puts " visited"
+        next
+      elsif type.ord >= KEY_START && type.ord <= KEY_END && !path.keys_found.include?(type)
+        #puts " found #{key} for path #{path}"
+        new_path = path.dup
+        new_path.keys_found << type
+        new_path.keys_not_found.delete(type)
+        new_path.steps += steps
+        new_path.x = x
+        new_path.y = y
+        new_paths << new_path
+      elsif type == WALL
+        #puts " wall"
+        next
+      elsif type.ord >= DOOR_START && type.ord <= DOOR_END && !path.keys_found.include?(type.downcase)
+        #puts "hit wall #{type}"
+        next
+      else
+        visited[y][x] = true
+
+        queue << [ x, y - 1, steps + 1 ]
+        queue << [ x, y + 1, steps + 1 ]
+        queue << [ x - 1, y, steps + 1 ]
+        queue << [ x + 1, y, steps + 1 ]
+
+        next
+      end
+    end
+
+    if new_paths.size == 0
+      nil
+    else
+      new_paths
+    end
+  end
 
   def dfs_path(path, prefix)
     #puts "check path #{path}"
