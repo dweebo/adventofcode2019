@@ -16,7 +16,7 @@ GEM
     pry-byebug (3.7.0)
       byebug (~> 11.0)
       pry (~> 0.10)
-    rake (10.5.0)
+    rake (12.3.3)
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
       rspec-expectations (~> 3.9.0)
@@ -42,7 +42,7 @@ DEPENDENCIES
   byebug (~> 11.0)
   pry
   pry-byebug (~> 3.7.0)
-  rake (~> 10.0)
+  rake (~> 12.3)
   rspec (~> 3.0)
   rspec_junit_formatter (~> 0.3.0)
 
